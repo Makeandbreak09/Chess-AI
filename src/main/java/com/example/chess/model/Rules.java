@@ -254,7 +254,7 @@ public class Rules {
             }
             //Oben Oben
             if(pos[1] == 1) {
-                if (pos[1] + 2 < 8 && (board[pos[0]][pos[1] + 2] == null)) {
+                if (pos[1] + 2 < 8 && (board[pos[0]][pos[1] + 2] == null && board[pos[0]][pos[1] + 1] == null)) {
                     int[] p = {pos[0], pos[1] + 2};
                     o.add(p);
                 }
@@ -277,7 +277,7 @@ public class Rules {
             }
             //Unten Unten
             if(pos[1] == 6) {
-                if (pos[1] - 2 > -1 && (board[pos[0]][pos[1] - 2] == null)) {
+                if (pos[1] - 2 > -1 && (board[pos[0]][pos[1] - 2] == null && board[pos[0]][pos[1] -1] == null)) {
                     int[] p = {pos[0], pos[1] - 2};
                     o.add(p);
                 }
