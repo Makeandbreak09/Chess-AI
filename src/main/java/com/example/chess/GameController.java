@@ -1,5 +1,6 @@
 package com.example.chess;
 
+import com.example.chess.model.Rules;
 import com.example.chess.model.pieces.*;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
+import java.util.ArrayList;
+
 public class GameController {
 
     @FXML
@@ -22,6 +25,9 @@ public class GameController {
     private Piece[][] board;
     private Piece draggedPiece;
     private int[] draggedPos = new int[2];
+    private ArrayList<int[]> posPos;
+
+    private Rules rules;
 
     public GameController() {
 
@@ -30,6 +36,7 @@ public class GameController {
     @FXML
     public void initialize() {
         board = new Piece[8][8];
+        rules = new Rules(board);
 
         addGridEvent();
         setUpBoard();
@@ -37,27 +44,27 @@ public class GameController {
 
     private void setUpBoard(){
         board[0][0] = new Rock(true);
-        board[0][1] = new Knight(true);
-        board[0][2] = new Bishop(true);
-        board[0][3] = new Queen(true);
-        board[0][4] = new King(true);
-        board[0][5] = new Bishop(true);
-        board[0][6] = new Knight(true);
-        board[0][7] = new Rock(true);
+        board[1][0] = new Knight(true);
+        board[2][0] = new Bishop(true);
+        board[3][0] = new Queen(true);
+        board[4][0] = new King(true);
+        board[5][0] = new Bishop(true);
+        board[6][0] = new Knight(true);
+        board[7][0] = new Rock(true);
         for(int i = 0; i<board[1].length; i++){
-            board[1][i] = new Pawn(true);
+            board[i][1] = new Pawn(true);
         }
 
-        board[7][0] = new Rock(false);
-        board[7][1] = new Knight(false);
-        board[7][2] = new Bishop(false);
-        board[7][3] = new Queen(false);
-        board[7][4] = new King(false);
-        board[7][5] = new Bishop(false);
-        board[7][6] = new Knight(false);
+        board[0][7] = new Rock(false);
+        board[1][7] = new Knight(false);
+        board[2][7] = new Bishop(false);
+        board[3][7] = new Queen(false);
+        board[4][7] = new King(false);
+        board[5][7] = new Bishop(false);
+        board[6][7] = new Knight(false);
         board[7][7] = new Rock(false);
         for(int i = 0; i<board[6].length; i++){
-            board[6][i] = new Pawn(false);
+            board[i][6] = new Pawn(false);
         }
     }
 
@@ -69,17 +76,23 @@ public class GameController {
                 int y = (int)((grid.getHeight()-event.getY())/(grid.getHeight()/board[0].length));
                 if(x>-1&&x<8&&y>-1&&y<8) {
                     if(draggedPiece!=null) {
-                        if(board[y][x]==null || board[y][x].isWhite() != draggedPiece.isWhite()) {
-                            board[draggedPos[1]][draggedPos[0]] = null;
-                            board[y][x] = draggedPiece;
+                        int[] p = {x,y};
+                        for(int i = 0; posPos!=null&&i<posPos.size(); i++) {
+                            if (posPos.get(i)[0] == p[0] && posPos.get(i)[1] == p[1]) {
+                                board[draggedPos[0]][draggedPos[1]] = null;
+                                board[x][y] = draggedPiece;
+                                break;
+                            }
                         }
                         draggedPiece.setHighlighted(false);
                         draggedPiece = null;
-                    }else if(draggedPiece == null && board[y][x] != null){
-                        draggedPiece = board[y][x];
+                        posPos = null;
+                    }else if(draggedPiece == null && board[x][y] != null){
+                        draggedPiece = board[x][y];
                         draggedPiece.setHighlighted(true);
                         draggedPos[0] = x;
                         draggedPos[1] = y;
+                        posPos = rules.getPosPos(draggedPiece, draggedPos);
                     }
                 }
 
@@ -97,17 +110,26 @@ public class GameController {
                 b.setAlignment(Pos.CENTER);
                 b.setPadding(Insets.EMPTY);
 
+                //Setze die Bilder der Pieces
                 if(board[i][j] != null) {
                     ImageView imageView = new ImageView(getPieceImage(board[i][j]));
                     imageView.setFitWidth(grid.getWidth() / 8);
                     imageView.setFitHeight(grid.getHeight() / 8);
 
                     b.getChildren().add(imageView);
+                    //Markiere markiertes Piece
                     if (board[i][j].isHighlighted()) {
                         b.setStyle("-fx-border-style: solid inside; -fx-border-width: 3; -fx-border-color: rgb(225, 255, 0);");
                     }
                 }
-                grid.add(b, j, 8 - i);
+                grid.add(b, i, 8 - j);
+
+                //Markiere mögliche Moves
+                for(int k = 0; posPos != null && k<posPos.size(); k++) {
+                    if (posPos.get(k)[0] == i && posPos.get(k)[1] == j) {
+                        b.setStyle("-fx-background-color: rgb(0, 255, 0 , 0.2)");
+                    }
+                }
             }
         }
     }
