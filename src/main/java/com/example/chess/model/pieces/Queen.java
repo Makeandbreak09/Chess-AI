@@ -1,4 +1,4 @@
-package com.example.chess.model;
+package com.example.chess.model.pieces;
 
 public class Queen extends Piece{
 

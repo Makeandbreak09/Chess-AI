@@ -1,0 +1,5 @@
+.on{
+    -fx-border-style: solid outside;
+    -fx-border-width: 3;
+    -fx-border-color: rgb(225, 255, 0);
+}
