@@ -4,6 +4,7 @@ public class Piece {
 
     protected boolean white;
     protected boolean highlighted;
+    protected int moves = 0;
 
     public Piece(boolean white){
         this.white = white;
@@ -23,5 +24,13 @@ public class Piece {
 
     public void setHighlighted(boolean highlighted) {
         this.highlighted = highlighted;
+    }
+
+    public int getMoves() {
+        return moves;
+    }
+
+    public void addMove(){
+        moves++;
     }
 }

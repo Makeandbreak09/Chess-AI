@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import com.example.chess.model.Move;
+import com.example.chess.model.Moves;
 import com.example.chess.model.Rules;
 import com.example.chess.model.pieces.*;
 import javafx.event.EventHandler;
@@ -23,9 +25,10 @@ public class GameController {
     private GridPane grid;
 
     private Piece[][] board;
+    private ArrayList<Move> allMoves;
     private Piece draggedPiece;
     private int[] draggedPos = new int[2];
-    private ArrayList<int[]> posPos;
+    private ArrayList<Moves> posMoves;
 
     private Rules rules;
 
@@ -36,6 +39,7 @@ public class GameController {
     @FXML
     public void initialize() {
         board = new Piece[8][8];
+        allMoves = new ArrayList<Move>();
         rules = new Rules(board);
 
         addGridEvent();
@@ -75,30 +79,39 @@ public class GameController {
                 int x = (int)((event.getX())/(grid.getWidth()/board.length));
                 int y = (int)((grid.getHeight()-event.getY())/(grid.getHeight()/board[0].length));
                 if(x>-1&&x<8&&y>-1&&y<8) {
-                    if(draggedPiece!=null) {
-                        int[] p = {x,y};
-                        for(int i = 0; posPos!=null&&i<posPos.size(); i++) {
-                            if (posPos.get(i)[0] == p[0] && posPos.get(i)[1] == p[1]) {
-                                board[draggedPos[0]][draggedPos[1]] = null;
-                                board[x][y] = draggedPiece;
-                                break;
-                            }
-                        }
-                        draggedPiece.setHighlighted(false);
-                        draggedPiece = null;
-                        posPos = null;
-                    }else if(draggedPiece == null && board[x][y] != null){
-                        draggedPiece = board[x][y];
-                        draggedPiece.setHighlighted(true);
-                        draggedPos[0] = x;
-                        draggedPos[1] = y;
-                        posPos = rules.getPosPos(draggedPiece, draggedPos);
-                    }
+                    handleClick(x, y);
                 }
 
                 draw();
             }
         });
+    }
+
+    public void handleClick(int x, int y){
+        if(draggedPiece!=null) {
+            int[] p = {x,y};
+            for(int i = 0; posMoves!=null&&i<posMoves.size(); i++) {
+                if (posMoves.get(i).getMoves().get(0).getNewPos()[0] == p[0] && posMoves.get(i).getMoves().get(0).getNewPos()[1] == p[1]) {
+                    Moves moves = posMoves.get(i);
+                    for(int j = 0; j<moves.getMoves().size(); j++) {
+                        board[moves.getMoves().get(j).getOldPos()[0]][moves.getMoves().get(j).getOldPos()[1]] = null;
+                        board[moves.getMoves().get(j).getNewPos()[0]][moves.getMoves().get(j).getNewPos()[1]] = moves.getMoves().get(j).getNewPiece();
+
+                        moves.getMoves().get(j).getNewPiece().addMove();
+                    }
+                    break;
+                }
+            }
+            draggedPiece.setHighlighted(false);
+            draggedPiece = null;
+            posMoves = null;
+        }else if(draggedPiece == null && board[x][y] != null){
+            draggedPiece = board[x][y];
+            draggedPiece.setHighlighted(true);
+            draggedPos[0] = x;
+            draggedPos[1] = y;
+            posMoves = rules.getPosPos(draggedPiece, draggedPos);
+        }
     }
 
     public void draw(){
@@ -125,8 +138,8 @@ public class GameController {
                 grid.add(b, i, 8 - j);
 
                 //Markiere mögliche Moves
-                for(int k = 0; posPos != null && k<posPos.size(); k++) {
-                    if (posPos.get(k)[0] == i && posPos.get(k)[1] == j) {
+                for(int k = 0; posMoves != null && k<posMoves.size(); k++) {
+                    if (posMoves.get(k).getMoves().get(0).getNewPos()[0] == i && posMoves.get(k).getMoves().get(0).getNewPos()[1] == j) {
                         b.setStyle("-fx-background-color: rgb(0, 255, 0 , 0.2)");
                     }
                 }

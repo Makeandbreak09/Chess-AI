@@ -8,9 +8,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainApplication extends Application {
+
+    private GameController gameController;
+
     @Override
     public void start(Stage stage) throws IOException {
-        GameController gameController = new GameController();
+        gameController = new GameController();
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("game-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
