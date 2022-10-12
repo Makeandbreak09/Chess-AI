@@ -1,4 +1,4 @@
-.general{
+.black{
     -fx-background-image: url("images/background2.png");
     -fx-background-repeat: stretch;
     -fx-background-size: cover, auto;
@@ -6,4 +6,14 @@
     -fx-border-style: solid outside;
     -fx-border-width: 5;
     -fx-border-color: rgb(0, 0, 0);
+}
+
+.white{
+    -fx-background-image: url("images/background2.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: cover, auto;
+    -fx-background-position: center center;
+    -fx-border-style: solid outside;
+    -fx-border-width: 5;
+    -fx-border-color: rgb(255, 255, 255);
 }

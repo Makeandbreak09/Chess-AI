@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameController {
 
@@ -28,7 +29,7 @@ public class GameController {
     private ArrayList<Move> allMoves;
     private Piece draggedPiece;
     private int[] draggedPos = new int[2];
-    private ArrayList<Moves> posMoves;
+    private ArrayList<Moves> allPosMoves;
 
     private Rules rules;
 
@@ -44,7 +45,7 @@ public class GameController {
     public void initialize() {
         board = new Piece[8][8];
         allMoves = new ArrayList<Move>();
-        rules = new Rules(board);
+        rules = new Rules();
         players = new Player[2];
 
         addGridEvent();
@@ -134,13 +135,15 @@ public class GameController {
         for(int i = 0; i<board[6].length; i++){
             board[i][6] = new Pawn(false, players[1]);
         }
+
+        allPosMoves = rules.getAllPosMoves(players[0], board);
     }
 
     private void addGridEvent() {
         grid.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(testPlayer(event)){
+                if(handleClick(event)){
                     if(gameOn) {
                         draw();
                     }else{
@@ -165,9 +168,9 @@ public class GameController {
     }
 
     private void gameOver(){
+        draw();
 
-
-        mainApplication.startStartMenuView();
+        //mainApplication.startStartMenuView();
     }
 
     private void changeActivePlayer(){
@@ -176,12 +179,17 @@ public class GameController {
         }else{
             activePlayer = 0;
         }
+
+        allPosMoves = rules.getAllPosMoves(players[activePlayer], board);
+        if(allPosMoves.isEmpty()){
+            gameOn = false;
+        }
     }
 
     private boolean testComputer(){
         if(players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("AI")){
             AI ai = (AI) players[activePlayer];
-            move(ai.play());
+            move(ai.play(allPosMoves));
             changeActivePlayer();
 
             return true;
@@ -189,24 +197,23 @@ public class GameController {
         return false;
     }
 
-    private boolean testPlayer(MouseEvent event){
-        if(players[activePlayer].getClass().getSimpleName().equals("Player")) {
+    private boolean handleClick(MouseEvent event){
+        if(players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("Player")) {
             int x = (int) ((event.getX()) / (grid.getWidth() / board.length));
             int y = (int) ((grid.getHeight() - event.getY()) / (grid.getHeight() / board[0].length));
             if (x > -1 && x < 8 && y > -1 && y < 8) {
-                handleClick(x, y);
+                testPlayer(new int[]{x,y});
             }
             return true;
         }
         return false;
     }
 
-    public void handleClick(int x, int y){
+    public void testPlayer(int[] p){
         if(draggedPiece!=null) {
-            int[] p = {x,y};
-            for(int i = 0; posMoves!=null&&i<posMoves.size(); i++) {
-                if (posMoves.get(i).getMoves().get(0).getNewPos()[0] == p[0] && posMoves.get(i).getMoves().get(0).getNewPos()[1] == p[1]) {
-                    Moves moves = posMoves.get(i);
+            for(int i = 0; allPosMoves!=null && i<allPosMoves.size(); i++) {
+                if (Arrays.equals(allPosMoves.get(i).getMoves().get(0).getNewPos(), p) && allPosMoves.get(i).getMoves().get(0).getOldPiece().equals(draggedPiece)) {
+                    Moves moves = allPosMoves.get(i);
                     move(moves);
                     changeActivePlayer();
                     break;
@@ -214,15 +221,11 @@ public class GameController {
             }
             draggedPiece.setHighlighted(false);
             draggedPiece = null;
-            posMoves = null;
-        }else if(draggedPiece == null && board[x][y] != null){
-            if(board[x][y].getPlayer() == players[activePlayer]) {
-                draggedPiece = board[x][y];
-                draggedPiece.setHighlighted(true);
-                draggedPos[0] = x;
-                draggedPos[1] = y;
-                posMoves = rules.getPosPos(draggedPiece, draggedPos);
-            }
+            draggedPos = null;
+        }else if(board[p[0]][p[1]] != null && board[p[0]][p[1]].getPlayer() == players[activePlayer]) {
+            draggedPiece = board[p[0]][p[1]];
+            draggedPiece.setHighlighted(true);
+            draggedPos = p;
         }
     }
 
@@ -249,13 +252,20 @@ public class GameController {
                 }
                 grid.add(b, i, 8 - j);
 
-                //Markiere mögliche Moves
-                for(int k = 0; posMoves != null && k<posMoves.size(); k++) {
-                    if (posMoves.get(k).getMoves().get(0).getNewPos()[0] == i && posMoves.get(k).getMoves().get(0).getNewPos()[1] == j) {
+                //Markiere mögliche Moves vom draggedPiece
+                for(int k = 0; allPosMoves != null && k<allPosMoves.size(); k++) {
+                    if (draggedPos != null && Arrays.equals(allPosMoves.get(k).getMoves().get(0).getOldPos(), draggedPos) && Arrays.equals(allPosMoves.get(k).getMoves().get(0).getNewPos(), new int[]{i, j})) {
                         b.setStyle("-fx-background-color: rgb(0, 255, 0 , 0.2)");
                     }
                 }
             }
+        }
+
+        grid.getStyleClass().clear();
+        if(activePlayer == 0){
+            grid.getStyleClass().add("white");
+        }else if(activePlayer == 1){
+            grid.getStyleClass().add("black");
         }
     }
 
