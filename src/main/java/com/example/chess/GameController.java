@@ -5,10 +5,12 @@ import com.example.chess.model.Moves;
 import com.example.chess.model.Rules;
 import com.example.chess.model.pieces.*;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,18 +26,22 @@ public class GameController {
 
     @FXML
     private GridPane grid;
+    @FXML
+    private Button mainMenuButton;
+    @FXML
+    private Button restartButton;
 
+    private Player[] players;
+    private int activePlayer = 0;
     private Piece[][] board;
-    private ArrayList<Move> allMoves;
+    private ArrayList<Moves> allMoves;
     private Piece draggedPiece;
     private int[] draggedPos = new int[2];
     private ArrayList<Moves> allPosMoves;
+    private boolean gameOn = true;
+    private String playerData;
 
     private Rules rules;
-
-    private int activePlayer = 0;
-    private Player[] players;
-    private boolean gameOn = true;
 
     public GameController() {
 
@@ -44,11 +50,11 @@ public class GameController {
     @FXML
     public void initialize() {
         board = new Piece[8][8];
-        allMoves = new ArrayList<Move>();
+        allMoves = new ArrayList<Moves>();
         rules = new Rules();
         players = new Player[2];
 
-        addGridEvent();
+        addEvents();
     }
 
     public void setMainApplication(MainApplication mainApplication){
@@ -56,6 +62,7 @@ public class GameController {
     }
 
     public void setPlayerData(String playerData){
+        this.playerData = playerData;
         switch (playerData){
             case "PvP":
                 players[0] = new Player(true);
@@ -139,7 +146,8 @@ public class GameController {
         allPosMoves = rules.getAllPosMoves(players[0], board);
     }
 
-    private void addGridEvent() {
+    private void addEvents() {
+        //Sets grid Listener
         grid.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -150,6 +158,22 @@ public class GameController {
                         gameOver();
                     }
                 }
+            }
+        });
+
+        //Sets Button Listeners
+        mainMenuButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                gameOn = false;
+                mainApplication.startStartMenuView();
+            }
+        });
+        restartButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                gameOn = false;
+                mainApplication.startGameView(playerData);
             }
         });
     }
@@ -189,7 +213,9 @@ public class GameController {
     private boolean testComputer(){
         if(players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("AI")){
             AI ai = (AI) players[activePlayer];
-            move(ai.play(allPosMoves));
+            Moves moves = ai.play(allPosMoves);
+            move(moves);
+            allMoves.add(moves);
             changeActivePlayer();
 
             return true;
@@ -198,7 +224,7 @@ public class GameController {
     }
 
     private boolean handleClick(MouseEvent event){
-        if(players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("Player")) {
+        if(gameOn && players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("Player")) {
             int x = (int) ((event.getX()) / (grid.getWidth() / board.length));
             int y = (int) ((grid.getHeight() - event.getY()) / (grid.getHeight() / board[0].length));
             if (x > -1 && x < 8 && y > -1 && y < 8) {
@@ -215,6 +241,7 @@ public class GameController {
                 if (Arrays.equals(allPosMoves.get(i).getMoves().get(0).getNewPos(), p) && allPosMoves.get(i).getMoves().get(0).getOldPiece().equals(draggedPiece)) {
                     Moves moves = allPosMoves.get(i);
                     move(moves);
+                    allMoves.add(moves);
                     changeActivePlayer();
                     break;
                 }
