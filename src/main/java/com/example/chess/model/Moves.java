@@ -17,4 +17,13 @@ public class Moves {
     public ArrayList<Move> getMoves(){
         return moves;
     }
+
+    public boolean equals(Moves moves){
+        for(int i = 0; i<this.moves.size() || i<moves.moves.size(); i++){
+            if(this.moves.get(i) == null || moves.moves.get(i) == null || !this.moves.get(i).equals(moves.moves.get(i))){
+                return false;
+            }
+        }
+        return true;
+    }
 }

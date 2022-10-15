@@ -186,6 +186,9 @@ public class GameController {
 
                 moves.getMoves().get(j).getNewPiece().addMove();
             }
+            if(rules.lastMovesSame(allMoves, 3) || rules.lastMovesCapture(allMoves, 30)){
+                gameOn = false;
+            }
         }else{
             gameOn = false;
         }

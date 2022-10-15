@@ -2,6 +2,8 @@ package com.example.chess.model;
 
 import com.example.chess.model.pieces.Piece;
 
+import java.util.Arrays;
+
 public class Move {
 
     private Piece oldPiece;
@@ -9,18 +11,22 @@ public class Move {
     private int[] oldPos;
     private int[] newPos;
 
-    public Move(Piece oldPiece, int[] oldPos, int[] newPos){
+    private boolean capture;
+
+    public Move(Piece oldPiece, int[] oldPos, int[] newPos, boolean capture){
         this.oldPiece = oldPiece;
         this.newPiece = oldPiece;
         this.oldPos = oldPos;
         this.newPos = newPos;
+        this.capture = capture;
     }
 
-    public Move(Piece oldPiece, Piece newPiece, int[] oldPos, int[] newPos){
+    public Move(Piece oldPiece, Piece newPiece, int[] oldPos, int[] newPos, boolean capture){
         this.oldPiece = oldPiece;
         this.newPiece = oldPiece;
         this.oldPos = oldPos;
         this.newPos = newPos;
+        this.capture = capture;
     }
 
     public Piece getOldPiece() {
@@ -41,5 +47,16 @@ public class Move {
 
     public int[] getNewPos() {
         return newPos;
+    }
+
+    public boolean isCapture() {
+        return capture;
+    }
+
+    public boolean equals(Move move){
+        if(this.oldPiece == move.oldPiece && this.newPiece == move.newPiece && Arrays.equals(this.oldPos, move.oldPos) && Arrays.equals(this.newPos, move.newPos)){
+            return true;
+        }
+        return false;
     }
 }

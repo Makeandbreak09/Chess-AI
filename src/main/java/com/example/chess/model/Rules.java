@@ -78,6 +78,30 @@ public class Rules {
         return false;
     }
 
+    public boolean lastMovesSame(ArrayList<Moves> allMoves, int count){
+        if(allMoves.size()>=count*2*2) {
+            for (int i = 0; i < count*2*2-4; i++) {
+                if (!allMoves.get(allMoves.size() - 1 - i).equals(allMoves.get(allMoves.size() - 1 - i - 4))){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean lastMovesCapture(ArrayList<Moves> allMoves, int count){
+        if(allMoves.size()>=count*2) {
+            for (int i = 0; i < count*2; i++) {
+                if (allMoves.get(allMoves.size() - 1 - i).getMoves().get(0).isCapture()){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<Moves> getPosMoves(Piece piece, int[] pos, Piece[][] board){
         ArrayList<Moves> o = new ArrayList<Moves>();
 
@@ -115,12 +139,12 @@ public class Rules {
         for(int i = 1; pos[0]-i>-1; i++){
             if(board[pos[0]-i][pos[1]] == null) {
                 int[] newPos = {pos[0]-i, pos[1]};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]-i][pos[1]].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]-i, pos[1]};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -132,12 +156,12 @@ public class Rules {
         for(int i = 1; pos[0]+i<8; i++){
             if(board[pos[0]+i][pos[1]] == null) {
                 int[] newPos = {pos[0]+i, pos[1]};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]+i][pos[1]].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]+i, pos[1]};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -149,12 +173,12 @@ public class Rules {
         for(int i = 1; pos[1]-i>-1; i++){
             if(board[pos[0]][pos[1]-i] == null) {
                 int[] newPos = {pos[0], pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]][pos[1]-i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0], pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -166,12 +190,12 @@ public class Rules {
         for(int i = 1; pos[1]+i<8; i++){
             if(board[pos[0]][pos[1]+i] == null) {
                 int[] newPos = {pos[0], pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]][pos[1]+i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0], pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -186,12 +210,12 @@ public class Rules {
         for(int i = 1; pos[0]-i>-1&&pos[1]-i>-1; i++){
             if(board[pos[0]-i][pos[1]-i] == null) {
                 int[] newPos = {pos[0]-i, pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]-i][pos[1]-i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]-i, pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -203,12 +227,12 @@ public class Rules {
         for(int i = 1; pos[0]+i<8&&pos[1]-i>-1; i++){
             if(board[pos[0]+i][pos[1]-i] == null) {
                 int[] newPos = {pos[0]+i, pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]+i][pos[1]-i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]+i, pos[1]-i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -220,12 +244,12 @@ public class Rules {
         for(int i = 1; pos[0]-i>-1&&pos[1]+i<8; i++){
             if(board[pos[0]-i][pos[1]+i] == null) {
                 int[] newPos = {pos[0]-i, pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]-i][pos[1]+i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]-i, pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -237,12 +261,12 @@ public class Rules {
         for(int i = 1; pos[0]+i<8&&pos[1]+i<8; i++){
             if(board[pos[0]+i][pos[1]+i] == null) {
                 int[] newPos = {pos[0]+i, pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 Moves ms = new Moves(m);
                 o.add(ms);
             }else if(board[pos[0]+i][pos[1]+i].isWhite() != piece.isWhite()){
                 int[] newPos = {pos[0]+i, pos[1]+i};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 Moves ms = new Moves(m);
                 o.add(ms);
                 break;
@@ -256,81 +280,129 @@ public class Rules {
         //Links Unten
         if(pos[0]-1>-1&&pos[1]-1>-1&&(board[pos[0]-1][pos[1]-1] == null || board[pos[0]-1][pos[1]-1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-1, pos[1]-1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Links
         if(pos[0]-1>-1&&(board[pos[0]-1][pos[1]] == null || board[pos[0]-1][pos[1]].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-1, pos[1]};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Links Oben
         if(pos[0]-1>-1&&pos[1]+1<8&&(board[pos[0]-1][pos[1]+1] == null || board[pos[0]-1][pos[1]+1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-1, pos[1]+1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Unten
         if(pos[1]-1>-1&&(board[pos[0]][pos[1]-1] == null || board[pos[0]][pos[1]-1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0], pos[1]-1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Oben
         if(pos[1]+1<8&&(board[pos[0]][pos[1]+1] == null || board[pos[0]][pos[1]+1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0], pos[1]+1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Rechts Unten
         if(pos[0]+1<8&&pos[1]-1>-1&&(board[pos[0]+1][pos[1]-1] == null || board[pos[0]+1][pos[1]-1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+1, pos[1]-1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Rechts
         if(pos[0]+1<8&&(board[pos[0]+1][pos[1]] == null || board[pos[0]+1][pos[1]].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+1, pos[1]};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Rechts Oben
         if(pos[0]+1<8&&pos[1]+1<8&&(board[pos[0]+1][pos[1]+1] == null || board[pos[0]+1][pos[1]+1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+1, pos[1]+1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
 
         //Rochade Rechts
         if(piece.getMoves() == 0 && board[7][pos[1]] != null && board[7][pos[1]].getMoves() == 0 && board[5][pos[1]] == null && board[6][pos[1]] == null) {
             int[] newPosK = {6, pos[1]};
-            Move mk = new Move(piece, pos, newPosK);
+            Move mk = new Move(piece, pos, newPosK, false);
             Moves ms = new Moves(mk);
 
             int[] newPosR = {5, pos[1]};
             int[] oldPosR = {7, pos[1]};
-            Move mr = new Move(board[7][pos[1]], oldPosR, newPosR);
+            Move mr = new Move(board[7][pos[1]], oldPosR, newPosR, false);
             ms.addMove(mr);
             o.add(ms);
         }
         //Rochade Links
         if(piece.getMoves() == 0 && board[0][pos[1]] != null && board[0][pos[1]].getMoves() == 0 && board[1][pos[1]] == null && board[2][pos[1]] == null && board[3][pos[1]] == null) {
             int[] newPosK = {2, pos[1]};
-            Move m = new Move(piece, pos, newPosK);
+            Move m = new Move(piece, pos, newPosK, false);
             Moves ms = new Moves(m);
 
             int[] newPosR = {3, pos[1]};
             int[] oldPosR = {0, pos[1]};
-            Move mr = new Move(board[7][pos[1]], oldPosR, newPosR);
+            Move mr = new Move(board[7][pos[1]], oldPosR, newPosR, false);
             ms.addMove(mr);
             o.add(ms);
         }
@@ -340,58 +412,106 @@ public class Rules {
         //Links Unten
         if(pos[0]-2>-1&&pos[1]-1>-1&&(board[pos[0]-2][pos[1]-1] == null || board[pos[0]-2][pos[1]-1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-2, pos[1]-1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Links Oben
         if(pos[0]-2>-1&&pos[1]+1<8&&(board[pos[0]-2][pos[1]+1] == null || board[pos[0]-2][pos[1]+1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-2, pos[1]+1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Unten Links
         if(pos[0]-1>-1&&pos[1]-2>-1&&(board[pos[0]-1][pos[1]-2] == null || board[pos[0]-1][pos[1]-2].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-1, pos[1]-2};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Unten Rechts
         if(pos[0]+1<8&&pos[1]-2>-1&&(board[pos[0]+1][pos[1]-2] == null || board[pos[0]+1][pos[1]-2].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+1, pos[1]-2};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Oben Links
         if(pos[0]-1>-1&&pos[1]+2<8&&(board[pos[0]-1][pos[1]+2] == null || board[pos[0]-1][pos[1]+2].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]-1, pos[1]+2};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Oben Rechts
         if(pos[0]+1<8&&pos[1]+2<8&&(board[pos[0]+1][pos[1]+2] == null || board[pos[0]+1][pos[1]+2].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+1, pos[1]+2};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Rechts Unten
         if(pos[0]+2<8&&pos[1]-1>-1&&(board[pos[0]+2][pos[1]-1] == null || board[pos[0]+2][pos[1]-1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+2, pos[1]-1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
         //Rechts Oben
         if(pos[0]+2<8&&pos[1]+1<8&&(board[pos[0]+2][pos[1]+1] == null || board[pos[0]+2][pos[1]+1].isWhite()!=piece.isWhite())) {
             int[] newPos = {pos[0]+2, pos[1]+1};
-            Move m = new Move(piece, pos, newPos);
-            Moves ms = new Moves(m);
-            o.add(ms);
+            if(board[newPos[0]][newPos[1]] != null) {
+                Move m = new Move(piece, pos, newPos, true);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }else{
+                Move m = new Move(piece, pos, newPos, false);
+                Moves ms = new Moves(m);
+                o.add(ms);
+            }
         }
     }
 
@@ -400,7 +520,7 @@ public class Rules {
             //Links Oben
             if(pos[0]-1>-1&&pos[1]+1<8&&(board[pos[0]-1][pos[1]+1] != null && board[pos[0]-1][pos[1]+1].isWhite()!=piece.isWhite())) {
                 int[] newPos = {pos[0]-1, pos[1]+1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 if(newPos[1] == 7) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
@@ -410,7 +530,7 @@ public class Rules {
             //Oben
             if(pos[1]+1<8&&(board[pos[0]][pos[1]+1] == null)) {
                 int[] newPos = {pos[0], pos[1]+1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 if(newPos[1] == 7) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
@@ -421,7 +541,7 @@ public class Rules {
             if(pos[1] == 1) {
                 if (pos[1] + 2 < 8 && (board[pos[0]][pos[1] + 2] == null && board[pos[0]][pos[1] + 1] == null)) {
                     int[] newPos = {pos[0], pos[1] + 2};
-                    Move m = new Move(piece, pos, newPos);
+                    Move m = new Move(piece, pos, newPos, false);
                     Moves ms = new Moves(m);  
                     o.add(ms);
                 }
@@ -429,7 +549,7 @@ public class Rules {
             //Rechts Oben
             if(pos[0]+1<8&&pos[1]+1<8&&(board[pos[0]+1][pos[1]+1] != null && board[pos[0]+1][pos[1]+1].isWhite()!=piece.isWhite())) {
                 int[] newPos = {pos[0]+1, pos[1]+1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 if(newPos[1] == 7) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
@@ -440,7 +560,7 @@ public class Rules {
             //Links Unten
             if(pos[0]-1>-1&&pos[1]-1>-1&&(board[pos[0]-1][pos[1]-1] != null && board[pos[0]-1][pos[1]-1].isWhite()!=piece.isWhite())) {
                 int[] newPos = {pos[0]-1, pos[1]-1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 if(newPos[1] == 0) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
@@ -450,7 +570,7 @@ public class Rules {
             //Unten
             if(pos[1]-1>-1&&(board[pos[0]][pos[1]-1] == null)) {
                 int[] newPos = {pos[0], pos[1]-1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, false);
                 if(newPos[1] == 0) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
@@ -461,7 +581,7 @@ public class Rules {
             if(pos[1] == 6) {
                 if (pos[1] - 2 > -1 && (board[pos[0]][pos[1] - 2] == null && board[pos[0]][pos[1] -1] == null)) {
                     int[] newPos = {pos[0], pos[1] - 2};
-                    Move m = new Move(piece, pos, newPos);
+                    Move m = new Move(piece, pos, newPos, false);
                     Moves ms = new Moves(m);
                     o.add(ms);
                 }
@@ -469,7 +589,7 @@ public class Rules {
             //Rechts Unten
             if(pos[0]+1<8&&pos[1]-1>-1&&(board[pos[0]+1][pos[1]-1] != null && board[pos[0]+1][pos[1]-1].isWhite()!=piece.isWhite())) {
                 int[] newPos = {pos[0]+1, pos[1]-1};
-                Move m = new Move(piece, pos, newPos);
+                Move m = new Move(piece, pos, newPos, true);
                 if(newPos[1] == 0) {
                     m.setNewPiece(Queen.convert((Pawn)piece));
                 }
