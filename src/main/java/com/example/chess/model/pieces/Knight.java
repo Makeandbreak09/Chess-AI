@@ -4,7 +4,8 @@ import com.example.chess.Player;
 
 public class Knight extends Piece{
 
-    public Knight(boolean white, Player player){
-        super(white, player);
+    public Knight(Player player, int id){
+        super(player, id);
+        this.value = 3;
     }
 }

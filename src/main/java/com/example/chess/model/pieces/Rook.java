@@ -2,10 +2,10 @@ package com.example.chess.model.pieces;
 
 import com.example.chess.Player;
 
-public class Bishop extends Piece{
+public class Rook extends Piece{
 
-    public Bishop(Player player, int id){
+    public Rook(Player player, int id){
         super(player, id);
-        this.value = 3;
+        this.value = 5;
     }
 }

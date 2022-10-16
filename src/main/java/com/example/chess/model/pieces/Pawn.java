@@ -4,7 +4,8 @@ import com.example.chess.Player;
 
 public class Pawn extends Piece{
 
-    public Pawn(boolean white, Player player){
-        super(white, player);
+    public Pawn(Player player, int id){
+        super(player, id);
+        this.value = 1;
     }
 }

@@ -2,24 +2,21 @@ package com.example.chess.model.pieces;
 
 import com.example.chess.Player;
 
-public class Piece {
+public abstract class Piece {
 
-    protected boolean white;
     protected boolean highlighted;
     protected int moves = 0;
     protected Player player;
+    protected int id;
+    protected int value;
 
-    public Piece(boolean white, Player player){
-        this.white = white;
+    public Piece(Player player, int id){
         this.player = player;
+        this.id = id;
     }
 
     public boolean isWhite() {
-        return white;
-    }
-
-    public void setWhite(boolean white) {
-        this.white = white;
+        return player.isWhite();
     }
 
     public boolean isHighlighted() {

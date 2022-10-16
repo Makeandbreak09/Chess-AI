@@ -2,9 +2,13 @@ package com.example.chess;
 
 public class Player {
 
-    protected boolean isWhite;
+    protected boolean white;
 
-    public Player(boolean isWhite){
-        this.isWhite = isWhite;
+    public Player(boolean white){
+        this.white = white;
+    }
+
+    public boolean isWhite(){
+        return white;
     }
 }

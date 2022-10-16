@@ -52,6 +52,7 @@ public class MainApplication extends Application {
             gameController.setMainApplication(this);
             gameController.setPlayerData(playerData);
             gameController.setUpBoard();
+            gameController.startThread();
             gameController.draw();
         } catch (IOException e) {
             throw new RuntimeException(e);

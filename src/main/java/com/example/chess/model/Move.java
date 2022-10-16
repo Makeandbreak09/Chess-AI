@@ -11,22 +11,11 @@ public class Move {
     private int[] oldPos;
     private int[] newPos;
 
-    private boolean capture;
-
-    public Move(Piece oldPiece, int[] oldPos, int[] newPos, boolean capture){
+    public Move(Piece oldPiece, int[] oldPos, int[] newPos){
         this.oldPiece = oldPiece;
         this.newPiece = oldPiece;
         this.oldPos = oldPos;
         this.newPos = newPos;
-        this.capture = capture;
-    }
-
-    public Move(Piece oldPiece, Piece newPiece, int[] oldPos, int[] newPos, boolean capture){
-        this.oldPiece = oldPiece;
-        this.newPiece = oldPiece;
-        this.oldPos = oldPos;
-        this.newPos = newPos;
-        this.capture = capture;
     }
 
     public Piece getOldPiece() {
@@ -47,10 +36,6 @@ public class Move {
 
     public int[] getNewPos() {
         return newPos;
-    }
-
-    public boolean isCapture() {
-        return capture;
     }
 
     public boolean equals(Move move){

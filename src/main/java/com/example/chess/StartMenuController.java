@@ -36,7 +36,7 @@ public class StartMenuController {
 
     private void addButtonListeners() {
         choiceBox.setItems(FXCollections.observableArrayList(
-                "PvP", "PvE(white)", "PvE(black)")
+                GameController.PvP, GameController.PvE_white, GameController.PvE_black)
         );
         choiceBox.getSelectionModel().select(0);
 
@@ -52,7 +52,7 @@ public class StartMenuController {
         trainAI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mainApplication.startGameView("EvE");
+                mainApplication.startGameView(GameController.EvE);
             }
         });
         exit.setOnAction(new EventHandler<ActionEvent>() {
