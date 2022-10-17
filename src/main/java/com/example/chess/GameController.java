@@ -50,6 +50,7 @@ public class GameController {
     private boolean gameOn;
     private int winner;
     private String playerData;
+    private Thread thread;
 
     private Rules rules;
 
@@ -115,7 +116,11 @@ public class GameController {
 
     public void startThread(){
         if(!playerData.equals(PvP)) {
-            Thread thread = new Thread(new Runnable() {
+            if(thread != null){
+                thread.interrupt();
+            }
+
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (gameOn) {
@@ -134,7 +139,7 @@ public class GameController {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            Thread.currentThread().interrupt(); // restore interrupted status
                         }
                     }
                 }

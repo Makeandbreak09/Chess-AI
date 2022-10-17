@@ -3,6 +3,7 @@ package com.example.chess;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class MainApplication extends Application {
         this.stage = stage;
 
         this.stage.setTitle("Chess");
+        this.stage.getIcons().add(new Image("com/example/chess/images/icon.png"));
 
         startStartMenuView();
     }
