@@ -1,11 +1,14 @@
 package com.example.chess;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class StartMenuController {
@@ -20,6 +23,10 @@ public class StartMenuController {
     private Button exit;
     @FXML
     private ChoiceBox choiceBox;
+    @FXML
+    private TextField generationsField;
+    @FXML
+    private TextField populationsField;
 
     public StartMenuController(){
 
@@ -40,6 +47,26 @@ public class StartMenuController {
         );
         choiceBox.getSelectionModel().select(0);
 
+        generationsField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    generationsField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        populationsField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    populationsField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
         startGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -52,7 +79,7 @@ public class StartMenuController {
         trainAI.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mainApplication.startGameView(GameController.EvE);
+                mainApplication.startTraining(Integer.valueOf(generationsField.getText()), Integer.valueOf(populationsField.getText()));
             }
         });
         exit.setOnAction(new EventHandler<ActionEvent>() {

@@ -38,4 +38,16 @@ public abstract class Piece {
     public Player getPlayer() {
         return player;
     }
+
+    public int getValue(){
+        return value;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

@@ -9,6 +9,7 @@ module com.example.chess {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
+    requires com.google.gson;
 
     opens com.example.chess to javafx.fxml;
     exports com.example.chess;

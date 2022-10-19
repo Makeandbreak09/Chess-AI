@@ -16,8 +16,8 @@ ext {
     junitVersion = '5.8.2'
 }
 
-sourceCompatibility = '18'
-targetCompatibility = '18'
+sourceCompatibility = "18.PREVIEW"
+targetCompatibility = "18.PREVIEW"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -25,7 +25,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.example.chess'
-    mainClass = 'com.example.chess.HelloApplication'
+    mainClass = 'com.example.chess.MainApplication'
 }
 
 javafx {
@@ -49,6 +49,9 @@ dependencies {
     implementation('com.github.almasb:fxgl:17.1') {
         exclude(group: 'org.openjfx')
     }
+
+    //gson
+    implementation('com.google.code.gson:gson:2.9.1')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")

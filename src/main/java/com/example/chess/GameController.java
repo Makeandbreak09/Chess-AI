@@ -84,7 +84,6 @@ public class GameController {
         setPlayerData(playerData);
         setUpBoard();
         startThread();
-
         draw();
     }
 
@@ -96,34 +95,32 @@ public class GameController {
         this.playerData = playerData;
         switch (playerData){
             case PvP:
-                players[0] = new Player(true);
-                players[1] = new Player(false);
+                players[0] = new Player();
+                players[1] = new Player();
                 break;
             case PvE_white:
-                players[0] = new Player(true);
-                players[1] = new AI(false, rules, board);
+                players[0] = new Player();
+                players[1] = AI.loadAI();
                 break;
             case PvE_black:
-                players[0] = new AI(true, rules, board);
-                players[1] = new Player(false);
+                players[0] = AI.loadAI();
+                players[1] = new Player();
                 break;
             case EvE:
-                players[0] = new AI(true, rules, board);
-                players[1] = new AI(false, rules, board);
+                players[0] = AI.loadAI();
+                players[1] = AI.loadAI();
                 break;
         }
+        players[0].white = true;
+        players[1].white = false;
     }
 
     public void startThread(){
         if(!playerData.equals(PvP)) {
-            if(thread != null){
-                thread.interrupt();
-            }
-
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (gameOn) {
+                    while (gameOn && Thread.currentThread() == thread) {
                         if (testComputer()) {
                             Platform.runLater(new Runnable() {
                                 @Override
@@ -239,7 +236,7 @@ public class GameController {
         draw();
 
         if(playerData.equals(EvE)){
-            restart(playerData);
+            //restart(playerData);
         }else{
             Alert alert = new Alert(Alert.AlertType.WARNING);
 
@@ -275,7 +272,7 @@ public class GameController {
     private boolean testComputer(){
         if(players[activePlayer] != null && players[activePlayer].getClass().getSimpleName().equals("AI")){
             AI ai = (AI) players[activePlayer];
-            Moves moves = ai.play(allPosMoves);
+            Moves moves = ai.play(board, allPosMoves);
             move(moves);
             changeActivePlayer();
 
@@ -378,15 +375,15 @@ public class GameController {
     private void loadImages(){
         allImages = new Image[12];
 
-        allImages[0] = new Image("com/example/chess/images/pieces/whiteQueen.png");
-        allImages[1] = new Image("com/example/chess/images/pieces/whiteKing.png");
+        allImages[0] = new Image("com/example/chess/images/pieces/whiteKing.png");
+        allImages[1] = new Image("com/example/chess/images/pieces/whiteQueen.png");
         allImages[2] = new Image("com/example/chess/images/pieces/whiteRook.png");
         allImages[3] = new Image("com/example/chess/images/pieces/whiteBishop.png");
         allImages[4] = new Image("com/example/chess/images/pieces/whiteKnight.png");
         allImages[5] = new Image("com/example/chess/images/pieces/whitePawn.png");
 
-        allImages[6] = new Image("com/example/chess/images/pieces/blackQueen.png");
-        allImages[7] = new Image("com/example/chess/images/pieces/blackKing.png");
+        allImages[6] = new Image("com/example/chess/images/pieces/blackKing.png");
+        allImages[7] = new Image("com/example/chess/images/pieces/blackQueen.png");
         allImages[8] = new Image("com/example/chess/images/pieces/blackRook.png");
         allImages[9] = new Image("com/example/chess/images/pieces/blackBishop.png");
         allImages[10] = new Image("com/example/chess/images/pieces/blackKnight.png");
@@ -397,9 +394,9 @@ public class GameController {
         if(piece != null) {
             if (piece.isWhite()) {
                 switch (piece.getClass().getSimpleName()) {
-                    case "Queen":
-                        return allImages[0];
                     case "King":
+                        return allImages[0];
+                    case "Queen":
                         return allImages[1];
                     case "Rook":
                         return allImages[2];
@@ -414,9 +411,9 @@ public class GameController {
                 }
             } else {
                 switch (piece.getClass().getSimpleName()) {
-                    case "Queen":
-                        return allImages[6];
                     case "King":
+                        return allImages[6];
+                    case "Queen":
                         return allImages[7];
                     case "Rook":
                         return allImages[8];

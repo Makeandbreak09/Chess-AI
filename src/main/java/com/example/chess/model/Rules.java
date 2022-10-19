@@ -463,7 +463,7 @@ public class Rules {
     private Move generateMove(Piece piece, int[] oldPos, int[] newPos){
         Move m = new Move(piece, oldPos, newPos);
         if(piece.getClass().getSimpleName().equals("Pawn") && (newPos[1] == 0 || newPos[1] == 7)) {
-            m.setNewPiece(Queen.convert((Pawn)piece));
+            m.setNewPiece(Pawn.convertToQueen((Pawn)piece));
         }
         return m;
     }

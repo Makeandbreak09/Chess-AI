@@ -8,10 +8,4 @@ public class Queen extends Piece{
         super(player, id);
         this.value = 9;
     }
-
-    public static Queen convert(Pawn pawn){
-        Queen o = new Queen(pawn.getPlayer(), pawn.id);
-
-        return o;
-    }
 }

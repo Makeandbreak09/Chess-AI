@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public class MainApplication extends Application {
 
+    private AllGames allGames;
+
     private Stage stage;
 
     private GameController gameController;
@@ -21,6 +23,7 @@ public class MainApplication extends Application {
 
         this.stage.setTitle("Chess");
         this.stage.getIcons().add(new Image("com/example/chess/images/icon.png"));
+        this.allGames = new AllGames(this, stage);
 
         startStartMenuView();
     }
@@ -31,6 +34,8 @@ public class MainApplication extends Application {
 
     public void startStartMenuView(){
         try {
+            stage.close();
+
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("start-menu-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
             stage.setScene(scene);
@@ -59,5 +64,9 @@ public class MainApplication extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void startTraining(int generations, int population){
+        allGames.startGames(generations, population);
     }
 }

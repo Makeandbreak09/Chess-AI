@@ -4,8 +4,7 @@ public class Player {
 
     protected boolean white;
 
-    public Player(boolean white){
-        this.white = white;
+    public Player(){
     }
 
     public boolean isWhite(){
