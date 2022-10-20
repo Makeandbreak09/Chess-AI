@@ -21,6 +21,7 @@ import java.util.Arrays;
 public class AI extends Player implements Serializable {
 
     public static final String PATH = "src/main/java/com/example/chess/AISaves.txt";
+    public static final String PATH2 = "src/main/java/com/example/chess/MovesDoneSaves.txt";
 
     private Neuron[][] allNeurons;
     private int generation = 1;
@@ -58,6 +59,19 @@ public class AI extends Player implements Serializable {
                 for(int j = 0; j<allPosMoves.size(); j++){
                     if(Arrays.equals(allPosMoves.get(j).getMoves().get(0).getOldPos(), startPos) && Arrays.equals(allPosMoves.get(j).getMoves().get(0).getNewPos(), endPos)){
                         o = allPosMoves.get(j);
+
+                        try {
+                            OutputStream stream = new FileOutputStream(PATH2, true);
+                            JsonWriter writer = new JsonWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
+
+                            writer.value(id+", ");
+                            writer.close();
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
                         return o;
                     }
                 }

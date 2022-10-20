@@ -4,7 +4,6 @@ import com.example.chess.model.Moves;
 import com.example.chess.model.Rules;
 import com.example.chess.model.pieces.*;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class TrainingController {
@@ -171,6 +170,10 @@ public class TrainingController {
 
     public ArrayList<Moves> getLastMoves(){
         return lastMoves;
+    }
+
+    public AI getMutatedAI(){
+        return players[mutatedPlayer];
     }
 
     public void saveAI(){
