@@ -222,13 +222,6 @@ public class GameController {
                 gameOn = false;
             }
             lastMoves.add(moves);
-        }else{
-            if(activePlayer == 0){
-                winner = 1;
-            }else{
-                winner = 0;
-            }
-            gameOn = false;
         }
     }
 

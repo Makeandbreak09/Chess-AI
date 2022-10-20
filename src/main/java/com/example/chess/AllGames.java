@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class AllGames {
 
+    public static final int MAX_RUNNING = 5;
+
     private MainApplication mainApplication;
     private Stage stage;
 
@@ -37,45 +39,54 @@ public class AllGames {
         }
         System.out.println("--AI ready--");
 
-        int index = -1;
-
+        TrainingController best = null;
         for (int g = 0; g < generations; g++) {
             System.out.println("--Generation "+g+" --");
 
             allTrainingsControllers = new TrainingController[population];
             allPoints = new double[population];
-
-            for (int i = 0; i < allTrainingsControllers.length; i++) {
-                AI[] AIs = new AI[]{AI.copy(ai), AI.copy(ai)};
-                AIs[0].white = true;
-                AIs[1].white = false;
-                int mutatedPlayer = 0;
-                AIs[mutatedPlayer].mutate();
-                allTrainingsControllers[i] = new TrainingController(AIs, mutatedPlayer);
-                System.out.println("--Game "+i+" started--");
+            for(int i = 0; i<allPoints.length; i++){
+                allPoints[i] = Double.MIN_VALUE;
             }
+            int mutatedPlayer = (int)(Math.random()*2);
+
             int finished = 0;
-            while (finished < population) {
-                for (int i = 0; i < allTrainingsControllers.length; i++) {
-                    if (allTrainingsControllers[i].isDone() && allPoints[i] == 0) {
+            int running = 0;
+            best = null;
+            while(finished < population) {
+                for (int i = 0; i<finished+MAX_RUNNING && i < allTrainingsControllers.length; i++) {
+                    if(running<finished+MAX_RUNNING && allPoints[i] == Double.MIN_VALUE && allTrainingsControllers[i] == null) {
+                        AI[] AIs = new AI[]{AI.copy(ai), AI.copy(ai)};
+                        AIs[0].white = true;
+                        AIs[1].white = false;
+                        AIs[mutatedPlayer].mutate();
+                        allTrainingsControllers[i] = new TrainingController(AIs, mutatedPlayer);
+                        running++;
+                        System.out.println("--Game " + i + " started--");
+                    }
+
+                    if (allTrainingsControllers[i] != null && allTrainingsControllers[i].isDone() && allPoints[i] == Double.MIN_VALUE) {
                         allPoints[i] = allTrainingsControllers[i].getPoints();
+                        if (best == null || best.getPoints() < allTrainingsControllers[i].getPoints()) {
+                            best = allTrainingsControllers[i];
+                        }
+                        allTrainingsControllers[i] = null;
                         finished++;
-                        System.out.println("--Game finished--");
+                        running--;
+                        System.out.println("--Game " + i + " finished--");
                     }
                 }
             }
 
-            index = 0;
-            System.out.println(allPoints[index]);
-            for (int i = 1; i < allPoints.length; i++) {
-                System.out.println(allPoints[i]);
-                if (allPoints[i] > allPoints[index]) {
-                    index = i;
-                }
+            for (int i = 0; i < allPoints.length; i++) {
+                System.out.println("--Points: "+allPoints[i]);
             }
 
-            ai = allTrainingsControllers[index].getMutatedAI();
+            ai = best.getMutatedAI();
         }
+
+        AI.saveAI(ai);
+        System.out.println("--AI saved--");
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("replay-view.fxml"));
@@ -87,13 +98,10 @@ public class AllGames {
             replayController.setMainApplication(mainApplication);
             replayController.setPlayerData();
             replayController.setUpBoard();
-            replayController.setMoves(allTrainingsControllers[index].getLastMoves());
+            replayController.setMoves(best.getLastMoves());
             replayController.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        AI.saveAI(ai);
-        System.out.println("--AI saved--");
     }
 }

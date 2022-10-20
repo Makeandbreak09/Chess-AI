@@ -50,7 +50,7 @@ public class AI extends Player implements Serializable {
             }
 
             for(int k = 0; k<sortedNeurons.size(); k++){
-                int id = sortedNeurons.get(k).getId()[sortedNeurons.get(k).getId().length-1];
+                int id = sortedNeurons.get(k).getId()[1];
 
                 int[][] startAndEndPos = getStartAndEndPos(board, id);
                 int[] startPos = startAndEndPos[0];
@@ -59,19 +59,6 @@ public class AI extends Player implements Serializable {
                 for(int j = 0; j<allPosMoves.size(); j++){
                     if(Arrays.equals(allPosMoves.get(j).getMoves().get(0).getOldPos(), startPos) && Arrays.equals(allPosMoves.get(j).getMoves().get(0).getNewPos(), endPos)){
                         o = allPosMoves.get(j);
-
-                        try {
-                            OutputStream stream = new FileOutputStream(PATH2, true);
-                            JsonWriter writer = new JsonWriter(new OutputStreamWriter(stream, StandardCharsets.UTF_8));
-
-                            writer.value(id+", ");
-                            writer.close();
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
                         return o;
                     }
                 }
@@ -89,6 +76,7 @@ public class AI extends Player implements Serializable {
                 for(int j = 0; j<board[i].length; j++){
                     if(board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("King")){
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -131,6 +119,7 @@ public class AI extends Player implements Serializable {
                 for(int j = 0; j<board[i].length; j++){
                     if(board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Queen") && board[i][j].getId()==(id-10)/(56)){
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -168,6 +157,7 @@ public class AI extends Player implements Serializable {
                 for (int j = 0; j < board[i].length; j++) {
                     if (board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Rook") && board[i][j].getId()==(id-10-9*56)/(28)) {
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -193,6 +183,7 @@ public class AI extends Player implements Serializable {
                 for (int j = 0; j < board[i].length; j++) {
                     if (board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Bishop") && board[i][j].getId()==(id-10-9*56-10*28)/(28)) {
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -218,6 +209,7 @@ public class AI extends Player implements Serializable {
                 for (int j = 0; j < board[i].length; j++) {
                     if (board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Knight") && board[i][j].getId()==(id-10-9*56-10*28-10*28)/(8)) {
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -253,8 +245,9 @@ public class AI extends Player implements Serializable {
         else if(id>=1154 && id<=1185){
             for (int i = 0; i < board.length; i++) {
                 for (int j = 0; j < board[i].length; j++) {
-                    if (board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Pawn") && board[i][j].getId()==(id-10-9*56-10*28-10*28-+10*8)/(4)) {
+                    if (board[i][j] != null && board[i][j].getPlayer() == this && board[i][j].getClass().getSimpleName().equals("Pawn") && board[i][j].getId()==(id-10-9*56-10*28-10*28-10*8)/(4)) {
                         startPos = new int[]{i, j};
+                        break;
                     }
                 }
             }
@@ -297,7 +290,7 @@ public class AI extends Player implements Serializable {
 
     public static AI setUpNeuralNetwork(int[] hiddenLayers){
         Neuron[][] allNeurons = new Neuron[hiddenLayers.length + 2][];
-        //Jedes Feld für jede Figur für jede Farbe + die eigene Farbe(769 + 1)
+        //Jedes Feld für jede Figur für jede Farbe + die eigene Farbe(2.048 + 1)
         allNeurons[0] = new Neuron[(8*8)*(16)*2 + 1];
         //1*König + (1+8)*Dame + (2+8)*Turm + (2+8)*Läufer + (2+8)*Springer + 8*Bauer (1186)
         allNeurons[hiddenLayers.length+2-1] = new Neuron[10+(1+8)*(7*8)+(2+8)*(7*4)+(2+8)*(7*4)+(2+8)*(4*2)+8*(4)];
@@ -309,7 +302,7 @@ public class AI extends Player implements Serializable {
         for(int i = 0; i<allNeurons.length; i++){
             for(int j = 0; j<allNeurons[i].length; j++){
                 if(i==0) {
-                    allNeurons[i][j] = new InputNeuron(new int[]{i,j},100 * Math.random(), new Edge[0]);
+                    allNeurons[i][j] = new InputNeuron(new int[]{i,j},-1, new Edge[0]);
                 } else {
                     Edge[] allEdges = new Edge[allNeurons[i-1].length];
                     for(int k = 0; k<allNeurons[i-1].length; k++){
@@ -320,9 +313,9 @@ public class AI extends Player implements Serializable {
                     }
 
                     if(i == allNeurons.length-1) {
-                        allNeurons[i][j] = new OutputNeuron(new int[]{i,j},100 * Math.random(), allEdges);
+                        allNeurons[i][j] = new OutputNeuron(new int[]{i,j},allNeurons[i-1].length/2 * Math.random(), allEdges);
                     }else{
-                        allNeurons[i][j] = new Neuron(new int[]{i,j}, 100 * Math.random(), allEdges);
+                        allNeurons[i][j] = new Neuron(new int[]{i,j}, allNeurons[i-1].length/2 * Math.random(), allEdges);
                     }
                 }
             }
@@ -401,7 +394,7 @@ public class AI extends Player implements Serializable {
         generation++;
         for(int i = 0; i<allNeurons.length; i++){
             for(int j = 0; j<allNeurons[i].length; j++){
-                allNeurons[i][j].mutate(0.2, 0.2);
+                allNeurons[i][j].mutate(0.5, 0.5);
             }
         }
     }

@@ -93,13 +93,6 @@ public class TrainingController {
                 gameOn = false;
             }
             lastMoves.add(moves);
-        }else{
-            if(activePlayer == 0){
-                winner = 1;
-            }else{
-                winner = 0;
-            }
-            gameOn = false;
         }
     }
 
@@ -142,7 +135,7 @@ public class TrainingController {
         if(winner == mutatedPlayer){
             points += 200;
         }else if(winner == -1){
-            points -=40;
+            points -=10;
         }else{
             points -= 200;
         }
@@ -155,11 +148,11 @@ public class TrainingController {
 
         for(int i = 0; i<board.length; i++){
             for(int j = 0; j<board[i].length; j++){
-                if(board[i][j] != null){
+                if(board[i][j] != null && !board[i][j].getClass().getSimpleName().equals("King")){
                     if(board[i][j].getPlayer() == players[mutatedPlayer]){
                         points += board[i][j].getValue();
                     }else{
-                        points -= board[i][j].getValue();
+                        points -= board[i][j].getValue()*1.3;
                     }
                 }
             }

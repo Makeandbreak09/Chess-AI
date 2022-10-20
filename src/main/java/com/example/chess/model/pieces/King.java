@@ -6,6 +6,6 @@ public class King extends Piece{
 
     public King(Player player, int id){
         super(player, id);
-        this.value = 9999;
+        this.value = Integer.MAX_VALUE;
     }
 }
