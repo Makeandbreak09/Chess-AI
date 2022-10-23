@@ -290,8 +290,8 @@ public class AI extends Player implements Serializable {
 
     public static AI setUpNeuralNetwork(int[] hiddenLayers){
         Neuron[][] allNeurons = new Neuron[hiddenLayers.length + 2][];
-        //Jedes Feld für jede Figur für jede Farbe + die eigene Farbe(2.048 + 1)
-        allNeurons[0] = new Neuron[(8*8)*(16)*2 + 1];
+        //Jedes Feld für jede Figur(Binär) für jede Farbe + die eigene Farbe(448 + 1)
+        allNeurons[0] = new Neuron[(8*8)*(6+1) + 1];
         //1*König + (1+8)*Dame + (2+8)*Turm + (2+8)*Läufer + (2+8)*Springer + 8*Bauer (1186)
         allNeurons[hiddenLayers.length+2-1] = new Neuron[10+(1+8)*(7*8)+(2+8)*(7*4)+(2+8)*(7*4)+(2+8)*(4*2)+8*(4)];
 
@@ -313,9 +313,9 @@ public class AI extends Player implements Serializable {
                     }
 
                     if(i == allNeurons.length-1) {
-                        allNeurons[i][j] = new OutputNeuron(new int[]{i,j},allNeurons[i-1].length/2 * Math.random(), allEdges);
+                        allNeurons[i][j] = new OutputNeuron(new int[]{i,j},0, allEdges);
                     }else{
-                        allNeurons[i][j] = new Neuron(new int[]{i,j}, allNeurons[i-1].length/2 * Math.random(), allEdges);
+                        allNeurons[i][j] = new Neuron(new int[]{i,j}, 0, allEdges);
                     }
                 }
             }
@@ -334,53 +334,14 @@ public class AI extends Player implements Serializable {
         for(int i = 0; i<board.length; i++){
             for(int j = 0; j<board[i].length; j++){
                 if(board[i][j] != null){
-                    int neuronPos = -1;
-
-                    if (board[i][j].isWhite()) {
-                        switch (board[i][j].getClass().getSimpleName()) {
-                            case "King":
-                                neuronPos = (i+j*8)*16*2+0+1*board[i][j].getId();
-                                break;
-                            case "Queen":
-                                neuronPos = (i+j*8)*16*2+1+1*board[i][j].getId();
-                                break;
-                            case "Rook":
-                                neuronPos = (i+j*8)*16*2+2+1*board[i][j].getId();
-                                break;
-                            case "Bishop":
-                                neuronPos = (i+j*8)*16*2+4+1*board[i][j].getId();
-                                break;
-                            case "Knight":
-                                neuronPos = (i+j*8)*16*2+6+1*board[i][j].getId();
-                                break;
-                            case "Pawn":
-                                neuronPos = (i+j*8)*16*2+8+1*board[i][j].getId();
-                                break;
-                        }
-                    } else {
-                        switch (board[i][j].getClass().getSimpleName()) {
-                            case "King":
-                                neuronPos = (i+j*8)*16*2+16+1*board[i][j].getId();
-                                break;
-                            case "Queen":
-                                neuronPos = (i+j*8)*16*2+17+1*board[i][j].getId();
-                                break;
-                            case "Rook":
-                                neuronPos = (i+j*8)*16*2+18+1*board[i][j].getId();
-                                break;
-                            case "Bishop":
-                                neuronPos = (i+j*8)*16*2+20+1*board[i][j].getId();
-                                break;
-                            case "Knight":
-                                neuronPos = (i+j*8)*16*2+22+1*board[i][j].getId();
-                                break;
-                            case "Pawn":
-                                neuronPos = (i+j*8)*16*2+24+1*board[i][j].getId();
-                                break;
+                    int[] b = getBinary(board[i][j]);
+                    for(int k = 0; k<b.length; k++){
+                        if(isWhite()) {
+                            allNeurons[0][i + 8*j + k].setValue(b[k]);
+                        }else {
+                            allNeurons[0][allNeurons[0].length-1 - 1 - i - 8*j - 7 + k].setValue(b[k]);
                         }
                     }
-
-                    allNeurons[0][neuronPos].setValue(1);
                 }
             }
         }
@@ -388,6 +349,43 @@ public class AI extends Player implements Serializable {
         if(white){
             allNeurons[0][allNeurons[0].length-1].setValue(1);
         }
+    }
+
+    private int[] getBinary(Piece piece){
+        int a = 0;
+        switch (piece.getClass().getSimpleName()) {
+            case "King":
+                a = 0+piece.getId();
+                break;
+            case "Queen":
+                a = 1+piece.getId();
+                break;
+            case "Rook":
+                a = 1+9+piece.getId();
+                break;
+            case "Bishop":
+                a = 1+9+10*piece.getId();
+                break;
+            case "Knight":
+                a = 1+9+10+10+piece.getId();
+                break;
+            case "Pawn":
+                a = 1+9+10+10+10+piece.getId();
+                break;
+        }
+
+        String b = Integer.toBinaryString(a);
+        int[] o = new int[7];
+        for(int i = 0; i<b.length(); i++){
+            o[o.length-1-i] = Character.getNumericValue(b.getBytes()[b.length()-1-i]);
+        }
+
+        if(piece.isWhite()) {
+            o[0] = 0;
+        }else{
+            o[0] = 1;
+        }
+        return o;
     }
 
     public void mutate(){
@@ -406,10 +404,10 @@ public class AI extends Player implements Serializable {
                 InputStream stream = new FileInputStream(PATH);
                 return deserialize(stream);
             }catch (Exception e){
-                return AI.setUpNeuralNetwork(new int[]{500, 500});
+                return AI.setUpNeuralNetwork(new int[]{500, 500, 500});
             }
         }else {
-            return AI.setUpNeuralNetwork(new int[]{500, 500});
+            return AI.setUpNeuralNetwork(new int[]{500, 500, 500});
         }
     }
 
@@ -426,37 +424,43 @@ public class AI extends Player implements Serializable {
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
 
-            reader.beginObject();
-            String fieldname = null;
 
-            while (reader.hasNext()) {
-                JsonToken token = reader.peek();
+                reader.beginObject();
+                String fieldname = null;
 
-                if (token.equals(JsonToken.NAME)) {
-                    //get the current token
-                    fieldname = reader.nextName();
+                while (reader.hasNext()) {
+                    JsonToken token = reader.peek();
+
+                    if (token.equals(JsonToken.NAME)) {
+                        //get the current token
+                        fieldname = reader.nextName();
+                    }
+
+                    if ("generation".equals(fieldname)) {
+                        //move to next token
+                        token = reader.peek();
+                        generation = (reader.nextInt());
+                    }
+
+                    if ("allNeurons".equals(fieldname)) {
+                        //move to next token
+                        token = reader.peek();
+                        Type typeOfN = new TypeToken<Neuron[][]>() {
+                        }.getType();
+                        allNeurons = gson.fromJson(reader, typeOfN);
+                    }
+
+                    if ("allEdges".equals(fieldname)) {
+                        //move to next token
+                        token = reader.peek();
+                        Type typeOfE = new TypeToken<Edge[][][]>() {
+                        }.getType();
+                        allEdges = gson.fromJson(reader, typeOfE);
+                    }
                 }
 
-                if ("generation".equals(fieldname)) {
-                    //move to next token
-                    token = reader.peek();
-                    generation = (reader.nextInt());
-                }
+                reader.endObject();
 
-                if("allNeurons".equals(fieldname)) {
-                    //move to next token
-                    token = reader.peek();
-                    Type typeOfN = new TypeToken<Neuron[][]>(){}.getType();
-                    allNeurons = gson.fromJson(reader, typeOfN);
-                }
-
-                if("allEdges".equals(fieldname)) {
-                    //move to next token
-                    token = reader.peek();
-                    Type typeOfE = new TypeToken<Edge[][][]>(){}.getType();
-                    allEdges = gson.fromJson(reader, typeOfE);
-                }
-            }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

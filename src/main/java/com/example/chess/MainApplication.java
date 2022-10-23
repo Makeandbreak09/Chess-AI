@@ -57,10 +57,7 @@ public class MainApplication extends Application {
 
             gameController = fxmlLoader.getController();
             gameController.setMainApplication(this);
-            gameController.setPlayerData(playerData);
-            gameController.setUpBoard();
-            gameController.startThread();
-            gameController.draw();
+            gameController.restart(playerData);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

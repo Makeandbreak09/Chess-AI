@@ -74,7 +74,7 @@ public class Neuron implements Serializable {
     }
 
     public void mutate(double factor1, double factor2){
-        bias = bias*(1-factor1/2+Math.random()*factor1);
+        bias = bias+1*(1-factor1/2+Math.random()*factor1);
         for(int i = 0; i<allEdges.length; i++){
             allEdges[i].mutate(factor2);
         }

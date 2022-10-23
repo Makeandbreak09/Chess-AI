@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
-public class ReplayController {
+public class ReplayController extends Controller {
 
     private MainApplication mainApplication;
 
@@ -37,8 +37,6 @@ public class ReplayController {
     private HBox[][] allHBoxes;
     private Image[] allImages;
 
-    private Piece[][] board;
-    private Player[] players;
     private int activePlayer;
     private ArrayList<Moves> lastMoves;
     private int winner;
@@ -79,32 +77,6 @@ public class ReplayController {
 
         players[0].white = true;
         players[1].white = false;
-    }
-
-    public void setUpBoard(){
-        board[0][0] = new Rook(players[0], 0);
-        board[1][0] = new Knight(players[0], 0);
-        board[2][0] = new Bishop(players[0], 0);
-        board[3][0] = new Queen(players[0], 0);
-        board[4][0] = new King(players[0], 0);
-        board[5][0] = new Bishop(players[0], 1);
-        board[6][0] = new Knight(players[0], 1);
-        board[7][0] = new Rook(players[0], 1);
-        for(int i = 0; i<board[1].length; i++){
-            board[i][1] = new Pawn(players[0], i);
-        }
-
-        board[0][7] = new Rook(players[1], 0);
-        board[1][7] = new Knight(players[1], 0);
-        board[2][7] = new Bishop(players[1], 0);
-        board[3][7] = new Queen(players[1], 0);
-        board[4][7] = new King(players[1], 0);
-        board[5][7] = new Bishop(players[1], 1);
-        board[6][7] = new Knight(players[1], 1);
-        board[7][7] = new Rook(players[1], 1);
-        for(int i = 0; i<board[6].length; i++){
-            board[i][6] = new Pawn(players[1], i);
-        }
     }
 
     public void setMoves(ArrayList<Moves> allMoves){

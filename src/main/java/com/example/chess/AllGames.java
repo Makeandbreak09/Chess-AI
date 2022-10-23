@@ -24,19 +24,8 @@ public class AllGames {
     }
 
     public void startGames(int generations, int population) {
-        AI ai = null;
-        File file = new File(AI.PATH);
-        if (file.exists()) {
-            try {
-                ai = AI.loadAI();
-                System.out.println("--AI loaded--");
-            } catch (Exception e) {
-                ai = AI.setUpNeuralNetwork(new int[]{500, 500});
-                throw new RuntimeException(e);
-            }
-        } else {
-            ai = AI.setUpNeuralNetwork(new int[]{500, 500});
-        }
+        AI ai = AI.loadAI();
+        System.out.println("--AI loaded--");
         System.out.println("--AI ready--");
 
         TrainingController best = null;
